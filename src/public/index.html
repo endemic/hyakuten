@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      body { margin: 0; padding: 0; background: #111; }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="javascript/vectr.min.js"></script>
+    <script src="javascript/player.js"></script>
+    <script src="javascript/client.js"></script>
+    <script>
+      /* Instantiate client */
+      window.onload = function () {
+        var game,
+            fullscreen = true;
+
+        game = new Vectr.Game(1000, 600, Client, fullscreen);
+      };
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>

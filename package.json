@@ -1,0 +1,11 @@
+{
+  "name": "百点",
+  "version": "0.0.1",
+  "description": "Multi-player shooting game",
+  "dependencies": {
+    "socket.io": "latest",
+    "express": "latest",
+    "coffee-script": "latest"
+  },
+  "author": "ndemick@gmail.com"
+}
