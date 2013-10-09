@@ -25,6 +25,7 @@ socket.configure ->
 WIDTH = 1000
 HEIGHT = 600
 MAX_VELOCITY = 0.25
+RESPAWN_TIMER = 3000
 
 players = {}
 bullets = []
@@ -45,11 +46,24 @@ onMovePlayer = (data) ->
     when 'up-stop' then players[this.id].thrust -= 1
     when 'down-stop' then players[this.id].thrust -= -1
     when 'shoot'
-      bullets.push new Bullet(this.id,
+      bullet = new Bullet(this.id,
                               players[this.id].position.x + Math.cos(players[this.id].rotation) * players[this.id].size / 2,
                               players[this.id].position.y + Math.sin(players[this.id].rotation) * players[this.id].size / 2,
                               Math.cos(players[this.id].rotation) + players[this.id].velocity.x,
                               Math.sin(players[this.id].rotation) + players[this.id].velocity.y)
+      bullets.push bullet
+      players[this.id].health -= bullet.cost
+
+respawn = (player) ->
+  player.dead = null
+  player.position.x = WIDTH / 2
+  player.position.y = HEIGHT / 2
+  player.velocity.x = player.velocity.y = 0
+  player.acceleration.x = player.acceleration.y = 0
+  player.rotation = 90
+  player.health = player.maxHealth
+  player.bounty = 1
+  util.log "Respawning player ##{player.id}"
 
 onConnection = (client) ->
   util.log "New client connected: #{client.id}"
@@ -62,6 +76,7 @@ onConnection = (client) ->
 onDisconnect = ->
   delete players[this.id]
   util.log "Player #{this.id} has disconnected"
+  socket.sockets.emit 'removePlayer', { id: this.id }
 
 # Listen for connection events
 socket.sockets.on 'connection', onConnection
@@ -75,6 +90,17 @@ setInterval ->
 
   # Update player position
   for id, player of players
+
+    # Handle health
+    if player.health < 0 and player.dead is null
+      player.dead = Date.now()
+    else if player.health < player.maxHealth and player.dead is null
+      player.health += player.regen
+    else if player.dead? and Date.now() - player.dead > RESPAWN_TIMER
+      respawn player
+
+    if player.dead? then continue
+
     player.rotation += player.rotate * delta * 2
     player.acceleration.x = Math.cos(player.rotation) * player.thrust * delta
     player.acceleration.y = Math.sin(player.rotation) * player.thrust * delta
@@ -99,7 +125,12 @@ setInterval ->
     if bullet.position.x < 0 || bullet.position.x > WIDTH then bullets.splice i, 1
     if bullet.position.y < 0 || bullet.position.y > HEIGHT then bullets.splice i, 1
 
-    # TODO: bullet collision
+    # bullet collision
+    for id, player of players
+      if bullet.owner != player.id and player.dead is null and player.collidesWith(bullet) 
+        player.health -= bullet.damage
+        bullets.splice i, 1
+        util.log "Bullet collision! Player health: #{player.health}"
 
   # Send to all connections
   socket.sockets.emit 'data', { players: players, bullets: bullets }
