@@ -40,7 +40,8 @@ var Client = function () {
   this.bulletShapes = [];
  
   for (i = 0; i < 8; i +=1) {
-    shape = new Vectr.Shape(0, 0, 'triangle');
+    //shape = new Vectr.Shape(0, 0, 'triangle');
+    shape = new Player(0, 0);
     shape.active = false;
     shape.size = 20;
     this.playerShapes.push(shape);
@@ -66,19 +67,31 @@ Client.prototype.update = function (delta) {
       data,
       count = 0;
 
+  // Reset player shapes
+  //for (id = 0, count = this.playerShapes.length; id < count; id += 1) {
+  //  shape = this.playerShapes[id];
+  //  shape.active = false;
+  //}
+
   // Draw each player
-  // TODO: This won't set deactivated players to active=false
   for (id in this.playerData) {
     shape = this.playerShapes[count];
     data = this.playerData[id];
     shape.position = data.position;
     shape.rotation = data.rotation;
-    shape.active = true;
+    shape.thrust = data.thrust;
+    // TODO: Add an explosion here the first time this value gets set to "false"
+    shape.active = data.dead === null ? true : false;
     count += 1;
   }
 
+  // Reset bullet shapes
+  for (id = 0, count = this.bulletShapes.length; id < count; id += 1) {
+    shape = this.bulletShapes[id];
+    shape.active = false;
+  }
+
   // Draw each bullet
-  // TODO: This won't set deactivated bullets to active=false
   for (id = 0, count = this.bulletData.length; id < count; id += 1) {
     shape = this.bulletShapes[id];
     data = this.bulletData[id];
@@ -89,7 +102,9 @@ Client.prototype.update = function (delta) {
 };
 
 Client.prototype.onReceiveData = function (data) {
-  console.log("Got data from server", data);
+  if (Date.now() % 100 == 0) {
+    //console.log("Got data from server", data);
+  }
   this.playerData = data.players;
   this.bulletData = data.bullets;
 };
