@@ -7,13 +7,14 @@ var Player = function (x, y) {
     this.speed = 100;
     this.shape = 'triangle';
     this.size = 20;
-    this.lineWidth = 3;
+    this.lineWidth = 1.5;
     this.rotation = 270 * Math.PI / 180;
+    this.thrust = 0;
 
     this.shadow = {
         'x': 0,
         'y': 0,
-        'blur': 20,
+        'blur': 10,
         'color': {
             'red': 255,
             'green': 255,
@@ -36,24 +37,18 @@ Player.prototype.customPath = function (context) {
 
     context.strokeStyle = 'rgba(' + this.color.red + ', ' + this.color.green + ', ' + this.color.blue + ', ' + this.color.alpha + ')';
     context.stroke();
+
+    // Draw engine fire
+    if (this.thrust) {
+      context.beginPath();
+      context.arc(0, 0, 2, 0, Math.PI * 2, true);
+      context.closePath();
+
+      context.fillStyle = 'rgba(255, 0, 0, 0.75)';
+      context.fill();
+    }
 };
 
 Player.prototype.update = function (dt) {
     Vectr.Shape.prototype.update.call(this, dt);
-
-    if (this.position.x + this.size / 2 > Vectr.WIDTH) {
-        this.position.x = Vectr.WIDTH - this.size / 2;
-    }
-
-    if (this.position.x - this.size / 2 < 0) {
-        this.position.x = this.size / 2;
-    }
-
-    if (this.position.y + this.size / 2 > Vectr.HEIGHT) {
-        this.position.y = Vectr.HEIGHT - this.size / 2;
-    }
-
-    if (this.position.y - this.size / 2 < 0) {
-        this.position.y = this.size / 2;
-    }
 };
