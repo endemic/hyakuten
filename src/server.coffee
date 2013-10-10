@@ -26,6 +26,16 @@ WIDTH = 1000
 HEIGHT = 600
 MAX_VELOCITY = 0.25
 RESPAWN_TIMER = 3000
+PLAYER_COLORS = [
+  'rgba(161, 249, 79, 1)'
+  'rgba(255, 169, 56, 1)'
+  'rgba(255, 49, 165, 1)'
+  'rgba(0, 171, 249, 1)'
+  'rgba(176, 60, 246, 1)'
+  'rgba(254, 250, 82, 1)'
+  'rgba(255, 38, 102, 1)'
+  'rgba(255, 255, 255, 1)'
+]
 
 players = {}
 bullets = []
@@ -60,7 +70,7 @@ respawn = (player) ->
   player.position.y = HEIGHT / 2
   player.velocity.x = player.velocity.y = 0
   player.acceleration.x = player.acceleration.y = 0
-  player.rotation = 90
+  player.rotation = Math.PI / 2
   player.health = player.maxHealth
   player.bounty = 1
   util.log "Respawning player ##{player.id}"
@@ -95,7 +105,8 @@ setInterval ->
     if player.health < 0 and player.dead is null
       player.dead = Date.now()
     else if player.health < player.maxHealth and player.dead is null
-      player.health += player.regen
+      player.health += player.regen * delta
+      if player.health > player.maxHealth then player.health = player.maxHealth
     else if player.dead? and Date.now() - player.dead > RESPAWN_TIMER
       respawn player
 
