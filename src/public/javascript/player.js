@@ -4,12 +4,15 @@
 var Player = function (x, y) {
     Vectr.Shape.apply(this, arguments);
 
-    this.speed = 100;
     this.shape = 'triangle';
     this.size = 20;
     this.lineWidth = 1.5;
-    this.rotation = 270 * Math.PI / 180;
     this.thrust = 0;
+    this.health = 0;
+    this.name = 'player';
+
+    this.healthLabel = new Vectr.Label(x, y + this.size, this.health, '10px sans-serif', null, 'center');
+    this.nameLabel = new Vectr.Label(x, y - this.size, this.name, '10px sans-serif', null, 'center');
 
     this.shadow = {
         'x': 0,
@@ -25,6 +28,15 @@ var Player = function (x, y) {
 };
 
 Player.prototype = new Vectr.Shape();
+
+Player.prototype.draw = function (context) {
+    Vectr.Shape.prototype.draw.call(this, context);
+
+    if (this.active === true) {
+      this.healthLabel.draw(context);
+      this.nameLabel.draw(context);
+    }
+};
 
 Player.prototype.customPath = function (context) {
     context.beginPath();
@@ -51,4 +63,10 @@ Player.prototype.customPath = function (context) {
 
 Player.prototype.update = function (dt) {
     Vectr.Shape.prototype.update.call(this, dt);
+    this.healthLabel.position.x = this.position.x;
+    this.healthLabel.position.y = this.position.y + this.size;
+    this.nameLabel.position.x = this.position.x;
+    this.nameLabel.position.y = this.position.y - this.size;
+
+    this.healthLabel.text = this.health;
 };

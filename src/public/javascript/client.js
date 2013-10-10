@@ -38,12 +38,11 @@ var Client = function () {
   this.bulletData = [];
   this.playerShapes = [];
   this.bulletShapes = [];
- 
+
   for (i = 0; i < 8; i +=1) {
     //shape = new Vectr.Shape(0, 0, 'triangle');
     shape = new Player(0, 0);
     shape.active = false;
-    shape.size = 20;
     this.playerShapes.push(shape);
     this.add(shape);
   }
@@ -80,6 +79,8 @@ Client.prototype.update = function (delta) {
     shape.position = data.position;
     shape.rotation = data.rotation;
     shape.thrust = data.thrust;
+    shape.health = data.health;
+    shape.name = id;
     // TODO: Add an explosion here the first time this value gets set to "false"
     shape.active = data.dead === null ? true : false;
     count += 1;
