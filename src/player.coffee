@@ -18,7 +18,7 @@ class Player
     @health = 100
     @maxHealth = 100
     @dead = false
-    @regen = 0.05
+    @regen = 0.01
     @bounty = 1
     @size = 20
 
