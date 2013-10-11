@@ -68,5 +68,5 @@ Player.prototype.update = function (dt) {
     this.nameLabel.position.x = this.position.x;
     this.nameLabel.position.y = this.position.y - this.size;
 
-    this.healthLabel.text = this.health;
+    this.healthLabel.text = Math.round(this.health);
 };

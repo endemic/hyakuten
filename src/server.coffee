@@ -44,6 +44,14 @@ onNewPlayer = (data) ->
   util.log "New player: #{this.id}"
   players[this.id] = new Player this.id, 100, 100
 
+  # Determine a color to assign to new player
+  # TODO: this is janky - change player data structure to an array
+  color = 0
+  for id of players
+    color += 1
+
+  players[this.id].color = PLAYER_COLORS[color]
+
 onMovePlayer = (data) ->
   #util.log "Move player #{this.id}: #{data}"
   switch data
@@ -125,6 +133,12 @@ setInterval ->
     if player.velocity.y > MAX_VELOCITY then player.velocity.y = MAX_VELOCITY
     if player.velocity.x < -MAX_VELOCITY then player.velocity.x = -MAX_VELOCITY
     if player.velocity.y < -MAX_VELOCITY then player.velocity.y = -MAX_VELOCITY
+
+    # Temporarily wrap players
+    if player.position.x < 0 then player.position.x = WIDTH
+    if player.position.x > WIDTH then player.position.x = 0
+    if player.position.y < 0 then player.position.y = HEIGHT
+    if player.position.y > HEIGHT then player.position.y = 0
 
   # Update bullet position
   for bullet, i in bullets

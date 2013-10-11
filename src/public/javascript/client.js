@@ -31,16 +31,12 @@ var Client = function () {
   this.socket.on('remove player', this.onRemovePlayer);
   this.socket.on('data', this.onReceiveData);
 
-  // x, y, text, font, color, alignment
-  //this.add(new Vectr.Label(Vectr.WIDTH / 2, Vectr.HEIGHT / 2, "NODE", "40px monospace", "rgba(255, 255, 255, 0.8)"));
-
   this.playerData = {};
   this.bulletData = [];
   this.playerShapes = [];
   this.bulletShapes = [];
 
   for (i = 0; i < 8; i +=1) {
-    //shape = new Vectr.Shape(0, 0, 'triangle');
     shape = new Player(0, 0);
     shape.active = false;
     this.playerShapes.push(shape);
@@ -80,6 +76,7 @@ Client.prototype.update = function (delta) {
     shape.rotation = data.rotation;
     shape.thrust = data.thrust;
     shape.health = data.health;
+    //shape.color = data.color;
     shape.name = id;
     // TODO: Add an explosion here the first time this value gets set to "false"
     shape.active = data.dead === null ? true : false;
@@ -97,7 +94,7 @@ Client.prototype.update = function (delta) {
     shape = this.bulletShapes[id];
     data = this.bulletData[id];
     shape.position = data.position;
-    shape.rotation = data.rotation;
+    //shape.color = data.color;
     shape.active = true;
   }
 };

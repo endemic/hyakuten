@@ -18,9 +18,10 @@ class Player
     @health = 100
     @maxHealth = 100
     @dead = false
-    @regen = 0.01
+    @regen = 7.5
     @bounty = 1
     @size = 20
+    @color = 'rgba(255, 255, 255, 1)'
 
   collidesWith: (other) ->
     Math.sqrt(Math.pow(other.position.x - @position.x, 2) + Math.pow(other.position.y - @position.y, 2)) < @size / 2 + other.size / 2
