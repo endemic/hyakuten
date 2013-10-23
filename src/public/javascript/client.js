@@ -3,7 +3,7 @@
 
 var Client = function () {
   Vectr.Scene.apply(this, arguments);
-  this.clearColor = 'rgba(0, 0, 0, 0.15)';
+  this.clearColor = 'rgba(0, 0, 0, 0.25)';
 
   var socket,
       onConnect,
@@ -76,7 +76,7 @@ Client.prototype.update = function (delta) {
     shape.rotation = data.rotation;
     shape.thrust = data.thrust;
     shape.health = data.health;
-    //shape.color = data.color;
+    shape.color = data.color;
     shape.name = id;
     // TODO: Add an explosion here the first time this value gets set to "false"
     shape.active = data.dead === null ? true : false;
@@ -94,7 +94,7 @@ Client.prototype.update = function (delta) {
     shape = this.bulletShapes[id];
     data = this.bulletData[id];
     shape.position = data.position;
-    //shape.color = data.color;
+    shape.color = data.color;
     shape.active = true;
   }
 };
