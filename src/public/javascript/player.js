@@ -1,44 +1,37 @@
-/*jslint sloppy: true, browser: true */
-/*globals Vectr, Player */
+/*jslint sloppy: true, browser: true, plusplus: true */
+/*globals Vectr: false, EngineParticle: false */
 
 var Player = function (x, y) {
     Vectr.Shape.apply(this, arguments);
 
     this.shape = 'triangle';
     this.size = 20;
-    this.lineWidth = 1.5;
+    this.lineWidth = 2;
     this.thrust = 0;
     this.health = 0;
+    this.glow = 10;
     this.name = 'player';
+    this.timer = 0;
 
-    this.healthLabel = new Vectr.Label(x, y + this.size, this.health, '10px sans-serif', null, 'center');
-    this.nameLabel = new Vectr.Label(x, y - this.size, this.name, '10px sans-serif', null, 'center');
+    this.healthLabel = new Vectr.Label(0, this.size, this.health);
+    this.healthLabel.font = '10px sans-serif';
+    this.nameLabel = new Vectr.Label(0, -this.size, this.name);
+    this.nameLabel.font = '10px sans-serif';
 
-    this.shadow = {
-        'x': 0,
-        'y': 0,
-        'blur': 10,
-        'color': {
-            'red': 255,
-            'green': 255,
-            'blue': 255,
-            'alpha': 1
-        }
-    };
+    this.add(this.nameLabel);
+    this.add(this.healthLabel);
+
+    this.exhaust = new Vectr.Pool();
+    this.i = 25;
+    while (this.i--) {
+        this.exhaust.add(new EngineParticle());
+    }
+    this.add(this.exhaust);
 };
 
 Player.prototype = new Vectr.Shape();
 
-Player.prototype.draw = function (context) {
-    Vectr.Shape.prototype.draw.call(this, context);
-
-    if (this.active === true) {
-      this.healthLabel.draw(context);
-      this.nameLabel.draw(context);
-    }
-};
-
-Player.prototype.customPath = function (context) {
+Player.prototype.path = function (context) {
     context.beginPath();
     context.moveTo(this.size / 2 * Math.cos(0), this.size / 2 * Math.sin(0));
     context.lineTo(this.size / 2 * Math.cos(120 * Math.PI / 180), this.size / 2 * Math.sin(120 * Math.PI / 180));
@@ -47,26 +40,22 @@ Player.prototype.customPath = function (context) {
     context.lineTo(this.size / 2 * Math.cos(0), this.size / 2 * Math.sin(0));
     context.closePath();
 
-    context.strokeStyle = 'rgba(' + this.color.red + ', ' + this.color.green + ', ' + this.color.blue + ', ' + this.color.alpha + ')';
+    context.strokeStyle = this.color;
     context.stroke();
-
-    // Draw engine fire
-    if (this.thrust) {
-      context.beginPath();
-      context.arc(0, 0, 2, 0, Math.PI * 2, true);
-      context.closePath();
-
-      context.fillStyle = 'rgba(255, 0, 0, 0.75)';
-      context.fill();
-    }
 };
 
-Player.prototype.update = function (dt) {
-    Vectr.Shape.prototype.update.call(this, dt);
-    this.healthLabel.position.x = this.position.x;
-    this.healthLabel.position.y = this.position.y + this.size;
-    this.nameLabel.position.x = this.position.x;
-    this.nameLabel.position.y = this.position.y - this.size;
+Player.prototype.update = function (delta) {
+    Vectr.Shape.prototype.update.call(this, delta);
 
     this.healthLabel.text = Math.round(this.health);
+    this.timer += delta;
+
+    // Draw engine fire
+    if (this.thrust && this.timer > 0.1) {
+        this.timer = 0;
+        this.i = this.exhaust.activate();
+        if (this.i) {
+            this.i.position = this.position;
+        }
+    }
 };
