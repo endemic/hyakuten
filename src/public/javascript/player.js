@@ -51,7 +51,7 @@ Player.prototype.update = function (delta) {
     this.timer += delta;
 
     // Draw engine fire
-    if (this.thrust && this.timer > 0.1) {
+    if (this.thrust && this.timer > 0.05) {
         this.timer = 0;
         this.i = this.exhaust.activate();
         if (this.i) {
