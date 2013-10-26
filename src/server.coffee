@@ -24,7 +24,7 @@ socket.configure ->
 
 WIDTH = 1000
 HEIGHT = 600
-MAX_VELOCITY = 0.25
+MAX_VELOCITY = 0.50
 RESPAWN_TIMER = 3000
 PLAYER_COLORS = [
   'rgba(161, 249, 79, 1)'
@@ -51,6 +51,7 @@ onNewPlayer = (data) ->
     color += 1
 
   players[this.id].color = PLAYER_COLORS[color]
+  players[this.id].name = this.id
 
 onMovePlayer = (data) ->
   #util.log "Move player #{this.id}: #{data}"
@@ -120,19 +121,22 @@ setInterval ->
 
     if player.dead? then continue
 
+    # Handle rotation/movement
     player.rotation += player.rotate * delta * 2
     player.acceleration.x = Math.cos(player.rotation) * player.thrust * delta
     player.acceleration.y = Math.sin(player.rotation) * player.thrust * delta
+
     player.velocity.x += player.acceleration.x
     player.velocity.y += player.acceleration.y
+
+    velocityVector = Math.sqrt(player.velocity.x * player.velocity.x + player.velocity.y * player.velocity.y)
+
+    if velocityVector > MAX_VELOCITY
+      player.velocity.x += (player.velocity.x / velocityVector) * (MAX_VELOCITY - velocityVector)
+      player.velocity.y += (player.velocity.y / velocityVector) * (MAX_VELOCITY - velocityVector)
+
     player.position.x += player.velocity.x * player.speed
     player.position.y += player.velocity.y * player.speed
-
-    # Enforce a maximum velocity - not realistic, but no fun otherwise
-    if player.velocity.x > MAX_VELOCITY then player.velocity.x = MAX_VELOCITY
-    if player.velocity.y > MAX_VELOCITY then player.velocity.y = MAX_VELOCITY
-    if player.velocity.x < -MAX_VELOCITY then player.velocity.x = -MAX_VELOCITY
-    if player.velocity.y < -MAX_VELOCITY then player.velocity.y = -MAX_VELOCITY
 
     # Temporarily wrap players
     if player.position.x < 0 then player.position.x = WIDTH
