@@ -52,6 +52,8 @@ onNewPlayer = (data) ->
 
   players[this.id].color = PLAYER_COLORS[color]
   players[this.id].name = this.id
+  # TODO: This message should only go to the originating socket
+  socket.sockets.emit 'new player', { id: this.id }
 
 onMovePlayer = (data) ->
   #util.log "Move player #{this.id}: #{data}"
@@ -139,10 +141,10 @@ setInterval ->
     player.position.y += player.velocity.y * player.speed
 
     # Temporarily wrap players
-    if player.position.x < 0 then player.position.x = WIDTH
-    if player.position.x > WIDTH then player.position.x = 0
-    if player.position.y < 0 then player.position.y = HEIGHT
-    if player.position.y > HEIGHT then player.position.y = 0
+    # if player.position.x < 0 then player.position.x = WIDTH
+    # if player.position.x > WIDTH then player.position.x = 0
+    # if player.position.y < 0 then player.position.y = HEIGHT
+    # if player.position.y > HEIGHT then player.position.y = 0
 
   # Update bullet position
   for bullet, i in bullets
@@ -164,4 +166,4 @@ setInterval ->
   # Send to all connections
   socket.sockets.emit 'data', { players: players, bullets: bullets }
   #util.debug "Sending data to client: #{JSON.stringify(players)}"
-, 1
+, 1000 / 60
