@@ -15,8 +15,11 @@ var Player = function (x, y) {
 
     this.healthLabel = new Vectr.Label(0, this.size, this.health);
     this.healthLabel.font = '10px sans-serif';
+    this.healthLabel.fixed = false;
+
     this.nameLabel = new Vectr.Label(0, -this.size, this.name);
     this.nameLabel.font = '10px sans-serif';
+    this.nameLabel.fixed = false;
 
     this.add(this.nameLabel);
     this.add(this.healthLabel);
@@ -55,7 +58,9 @@ Player.prototype.update = function (delta) {
         this.timer = 0;
         this.i = this.exhaust.activate();
         if (this.i) {
-            this.i.position = this.position;
+            // this.i.position = this.position;
+            this.i.position.x = 0;
+            this.i.position.y = 0;
         }
     }
 };
