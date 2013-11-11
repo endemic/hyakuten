@@ -14,7 +14,7 @@ class Player
     @rotation = 0
     @rotate = 0
     @thrust = 0
-    @speed = 0.5
+    @speed = 2
     @health = 100
     @maxHealth = 100
     @dead = false
