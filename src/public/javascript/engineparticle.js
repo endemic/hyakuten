@@ -12,6 +12,7 @@ var EngineParticle = function (x, y) {
     this.fade = 1.5;
     this.grow = 5;
     this.active = false;
+    this.fixed = true;
 };
 
 EngineParticle.prototype = new Vectr.Shape();

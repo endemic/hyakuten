@@ -2,7 +2,7 @@
 /*globals Vectr: false, EngineParticle: false */
 
 var Player = function (x, y) {
-    Vectr.Shape.apply(this, arguments);
+    Vectr.Shape.call(this, x, y);
 
     this.shape = 'triangle';
     this.size = 20;
@@ -58,9 +58,8 @@ Player.prototype.update = function (delta) {
         this.timer = 0;
         this.i = this.exhaust.activate();
         if (this.i) {
-            // this.i.position = this.position;
-            this.i.position.x = 0;
-            this.i.position.y = 0;
+            this.i.position.x = this.position.x;
+            this.i.position.y = this.position.y;
         }
     }
 };

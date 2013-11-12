@@ -60,6 +60,11 @@ var Client = function() {
         left: 0,
         right: arenaSize
     };
+
+    // Draw some shapes for reference
+    this.add(new Vectr.Shape(500, 500, 'square', 10));
+    this.add(new Vectr.Shape(300, 700, 'square', 10));
+    this.add(new Vectr.Shape(800, 900, 'square', 10));
 };
 
 Client.prototype = new Vectr.Scene();
@@ -90,12 +95,6 @@ Client.prototype.update = function (delta) {
         shape.name = id;
         // TODO: Add an explosion here the first time this value gets set to "false"
         shape.active = data.dead === null ? true : false;
-
-        // Scene camera target the currently controlled ship
-        if (this.id === id) {
-            this.target = shape;
-        }
-
         count += 1;
     }
 
@@ -135,6 +134,7 @@ Client.prototype.onDisconnect = function (data) {
 Client.prototype.onNewPlayer = function (data) {
     console.log("New player", data);
     this.id = data.id;
+    this.target = this.playerShapes[0];
 };
 
 Client.prototype.onMovePlayer = function (data) {
