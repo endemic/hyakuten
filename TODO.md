@@ -1,4 +1,4 @@
 # TODO
 
 * Fix exhaust particles
-* Fix camera bounds
+* Permanently assign a shape to an ID
