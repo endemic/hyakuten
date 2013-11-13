@@ -24,12 +24,15 @@ var Player = function (x, y) {
     this.add(this.nameLabel);
     this.add(this.healthLabel);
 
-    this.exhaust = new Vectr.Pool();
+    this.exhaustPool = new Vectr.Pool();
     this.i = 25;
+    var e;
     while (this.i--) {
-        this.exhaust.add(new EngineParticle());
+        e = new EngineParticle();
+        this.add(e);
+        this.exhaustPool.add(e);
     }
-    this.add(this.exhaust);
+    // this.add(this.exhaustPool);
 };
 
 Player.prototype = new Vectr.Shape();
@@ -56,10 +59,12 @@ Player.prototype.update = function (delta) {
     // Draw engine fire
     if (this.thrust && this.timer > 0.05) {
         this.timer = 0;
-        this.i = this.exhaust.activate();
+        this.i = this.exhaustPool.activate();
         if (this.i) {
-            this.i.position.x = this.position.x;
-            this.i.position.y = this.position.y;
+            this.i.position.x = this.i.startPosition.x = this.position.x;
+            this.i.position.y = this.i.startPosition.y = this.position.y;
         }
     }
+
+    this.exhaustPool.update(delta);
 };

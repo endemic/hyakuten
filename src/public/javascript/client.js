@@ -132,7 +132,7 @@ Client.prototype.onDisconnect = function (data) {
 };
 
 Client.prototype.onNewPlayer = function (data) {
-    console.log("New player", data);
+    console.log("New player: ", data.id);
     this.id = data.id;
     this.target = this.playerShapes[0];
 };
