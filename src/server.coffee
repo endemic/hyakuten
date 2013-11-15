@@ -10,11 +10,19 @@ Player = require('./player').Player
 Bullet = require('./bullet').Bullet
 
 app = express()
-# Serve static files out of server/public
-app.use(express.static(__dirname + '/public'))
 
-server = http.createServer(app).listen 8000
-console.log "Express running on port 8000"
+# Serve static files out of server/public
+app.use express.static(__dirname + '/public')
+app.set 'views', __dirname + '/views'
+
+ip = '192.168.11.28'
+port = 8000
+
+app.get '/', (request, response) ->
+  response.render 'index.ejs', { host: "http://#{ip}:#{port}" }
+
+server = http.createServer(app).listen port
+console.log "Express running on port #{port}"
 
 # Configure Socket.IO
 socket = io.listen server

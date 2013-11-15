@@ -5,6 +5,7 @@
   "dependencies": {
     "socket.io": "latest",
     "express": "latest",
+    "ejs": "latest",
     "coffee-script": "latest"
   },
   "author": "ndemick@gmail.com"

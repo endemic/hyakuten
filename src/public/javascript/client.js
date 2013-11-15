@@ -9,7 +9,7 @@ var Client = function() {
         shape,
         arenaSize;
 
-    this.socket = io.connect('http://localhost');
+    this.socket = io.connect(host);
 
     this.onConnect = this.onConnect.bind(this);
     this.onDisconnect = this.onDisconnect.bind(this);
